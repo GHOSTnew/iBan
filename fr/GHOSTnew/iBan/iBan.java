@@ -22,12 +22,15 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class iBan extends JavaPlugin {
 	
     private ConsoleCommandSender console;
+    public iBanConfig conf;
 	
 	public void onEnable() {
 		console = Bukkit.getServer().getConsoleSender();
-		console.sendMessage("[" + ChatColor.DARK_AQUA + "iBan" + ChatColor.RESET + "]" + ChatColor.GREEN + "Enable.");
 		PluginManager pm = this.getServer().getPluginManager();
         pm.registerEvents(new iBanListener(this), this);
+        conf = new iBanConfig(this);
+        conf.load();
+        console.sendMessage("[" + ChatColor.DARK_AQUA + "iBan" + ChatColor.RESET + "]" + ChatColor.GREEN + "Enable.");
 	}
 	
 	public void onDisable() {
@@ -40,7 +43,7 @@ public class iBan extends JavaPlugin {
 			Player player2 = getServer().getPlayer(args[0]);
 			player2.setBanned(true);
 			@SuppressWarnings("unused")
-			String setbanned = get("http://iban.infos.st/setbanned.php?user=<user>&pass=<password>&player="+ player2 +"&raison="+ args);
+			String setbanned = get("http://iban.infos.st/GET/setbanned.php?user="+ conf.user +"&pass="+ conf.pass +"&player="+ player2 +"&raison="+ args);
 			/*
 			 * Connexion avec le site externe 
 			 * Requete GET
