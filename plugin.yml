@@ -6,3 +6,4 @@ commands:
    iBan:
       description: iBan commands
       usage: /<command> [player]
+depends: [Vault]

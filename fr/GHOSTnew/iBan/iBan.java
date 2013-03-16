@@ -6,6 +6,8 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 
+import net.milkbowl.vault.permission.Permission;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -13,6 +15,7 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.material.Command;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /*
@@ -23,6 +26,7 @@ public class iBan extends JavaPlugin {
 	
     private ConsoleCommandSender console;
     public iBanConfig conf;
+    public static Permission perms = null;
 	
 	public void onEnable() {
 		console = Bukkit.getServer().getConsoleSender();
@@ -40,23 +44,23 @@ public class iBan extends JavaPlugin {
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) throws IOException {
 		if(label.equalsIgnoreCase("iBan")){
-			Player player2 = getServer().getPlayer(args[0]);
-			player2.setBanned(true);
-			@SuppressWarnings("unused")
-			String setbanned = get("http://iban.infos.st/GET/setbanned.php?user="+ conf.user +"&pass="+ conf.pass +"&player="+ player2 +"&raison="+ args);
-			/*
-			 * Connexion avec le site externe 
-			 * Requete GET
-			 * //?user=<user>&pass=<password>&player=player2&raison=<Raison>
-			 * sav le ban dans la BDD
-			 * 
-			 */
 			if (!(sender instanceof Player)) {
 				console = Bukkit.getServer().getConsoleSender();
+				Player player2 = getServer().getPlayer(args[0]);
+				player2.setBanned(true);
+				@SuppressWarnings("unused")
+				String setbanned = get("http://iban.infos.st/GET/setbanned.php?user="+ conf.user +"&pass="+ conf.pass +"&player="+ player2 +"&raison="+ args);
 				console.sendMessage(ChatColor.RED + args[0] + ChatColor.GREEN + "a été banie");
 			} else {
 				Player player = (Player) sender;
-				player.sendMessage(ChatColor.RED + args[0] + ChatColor.GREEN + "a été banie");
+				if(perms.has(player, "iBan.canBan")) {
+					Player player2 = getServer().getPlayer(args[0]);
+					player2.setBanned(true);
+					@SuppressWarnings("unused")
+					String setbanned = get("http://iban.infos.st/GET/setbanned.php?user="+ conf.user +"&pass="+ conf.pass +"&player="+ player2 +"&raison="+ args);
+					player.sendMessage(ChatColor.RED + args[0] + ChatColor.GREEN + "a été banie");
+				}
+				player.sendMessage(ChatColor.RED + "Vous n'avez pas les permissions");
 			}
 			
 			
@@ -79,5 +83,16 @@ public class iBan extends JavaPlugin {
 	in.close(); 
 	return source; 
 	}
+	
+	@SuppressWarnings({ "unused", "unchecked" })
+	private boolean setupPermissions() {
+
+        RegisteredServiceProvider rsp = getServer().getServicesManager().getRegistration(Permission.class);
+
+        perms = (Permission)rsp.getProvider();
+
+        return perms != null;
+
+      }
 
 }
