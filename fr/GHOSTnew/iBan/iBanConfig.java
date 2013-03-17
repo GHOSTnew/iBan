@@ -17,7 +17,7 @@ public class iBanConfig {
 			 config.set("config.password", "<your password>");
 		 }
 		 user = config.getString("config.user");
-		 pass = config.getString("config.pass");
+		 pass = config.getString("config.password");
 		 plugin.saveConfig();
 	 }
 

@@ -2,6 +2,7 @@ package fr.GHOSTnew.iBan;
 
 import java.io.IOException;
 
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -18,7 +19,7 @@ public class iBanListener implements Listener {
     	System.out.print(result);
     	if (result.contains("1")) {
         	 p.setBanned(true);
-    	     p.kickPlayer("Indésirable");
+    	     p.kickPlayer(ChatColor.RED + "Indésirable" + ChatColor.GOLD + " (iBan)");
          }
 
     }

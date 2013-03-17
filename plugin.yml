@@ -1,9 +1,12 @@
 name: iBan
 main: fr.GHOSTnew.iBan.iBan
-version: 1.5
+version: 1.7
 author: GHOSTnew
 commands:
-   iBan:
+   iban:
       description: iBan commands
-      usage: /<command> [player] [raison]
-depends: [Vault]
+      usage: /<command> <player> <raison>
+permissions:
+  iBan.canBan:
+    description: commande iBan
+    default: op
