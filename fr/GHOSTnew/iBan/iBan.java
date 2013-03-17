@@ -14,9 +14,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.material.Command;
-import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+
 
 /*
  *By GHOSTnew 
@@ -27,11 +26,11 @@ public class iBan extends JavaPlugin {
     private ConsoleCommandSender console;
     public iBanConfig conf;
     public static Permission perms = null;
+    public final iBanListener event = new iBanListener();
 	
 	public void onEnable() {
 		console = Bukkit.getServer().getConsoleSender();
-		PluginManager pm = this.getServer().getPluginManager();
-        pm.registerEvents(new iBanListener(this), this);
+		getServer().getPluginManager().registerEvents(this.event, this);
         conf = new iBanConfig(this);
         conf.load();
         console.sendMessage("[" + ChatColor.DARK_AQUA + "iBan" + ChatColor.RESET + "]" + ChatColor.GREEN + "Enable.");
@@ -51,19 +50,21 @@ public class iBan extends JavaPlugin {
 				@SuppressWarnings("unused")
 				String setbanned = get("http://iban.infos.st/GET/setbanned.php?user="+ conf.user +"&pass="+ conf.pass +"&player="+ player2 +"&raison="+ args);
 				console.sendMessage(ChatColor.RED + args[0] + ChatColor.GREEN + "a été banie");
+				return true;
 			} else {
 				Player player = (Player) sender;
-				if(perms.has(player, "iBan.canBan")) {
+				if(perms.has(player, "iBan.canBan") || player.isOp()) {
 					Player player2 = getServer().getPlayer(args[0]);
 					player2.setBanned(true);
 					@SuppressWarnings("unused")
-					String setbanned = get("http://iban.infos.st/GET/setbanned.php?user="+ conf.user +"&pass="+ conf.pass +"&player="+ player2 +"&raison="+ args);
+					String setbanned = get("http://iban.net63.net/GET/setbanned.php?user="+ conf.user +"&pass="+ conf.pass +"&player="+ player2.getName() +"&raison="+ args);
 					player.sendMessage(ChatColor.RED + args[0] + ChatColor.GREEN + "a été banie");
-				}
-				player.sendMessage(ChatColor.RED + "Vous n'avez pas les permissions");
+				}else {
+					player.sendMessage(ChatColor.RED + "Vous n'avez pas les permissions");
+				}return true;
+				
 			}
-			
-			
+				
 		}
 		return false;
 	}
@@ -83,16 +84,5 @@ public class iBan extends JavaPlugin {
 	in.close(); 
 	return source; 
 	}
-	
-	@SuppressWarnings({ "unused", "unchecked" })
-	private boolean setupPermissions() {
-
-        RegisteredServiceProvider rsp = getServer().getServicesManager().getRegistration(Permission.class);
-
-        perms = (Permission)rsp.getProvider();
-
-        return perms != null;
-
-      }
 
 }
