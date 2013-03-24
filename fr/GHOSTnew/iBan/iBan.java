@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLEncoder;
+import java.util.Arrays;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -45,7 +48,7 @@ public class iBan extends JavaPlugin {
 					player2.setBanned(true);
 					player2.kickPlayer(ChatColor.RED + "kicked by iBan");
 				    try {
-						String setbanned = get("http://iban.net63.net/GET/setbanned.php?user="+ conf.user +"&pass="+ conf.pass +"&player="+ player2.getName() +"&raison="+ args[1]);
+						String setbanned = get("http://iban.net63.net/GET/setbanned.php?user="+ conf.user +"&pass="+ conf.pass +"&player="+ player2.getName() +"&raison="+ URLEncoder.encode(Arrays.asList(args).toString(), "UTF-8"));
 						if(setbanned.contains("error")){
 							console.sendMessage("["+ ChatColor.DARK_AQUA + "iBan" + ChatColor.RESET + "]" + ChatColor.RED + "Mauvaise combinaison login/password");
 						}else if(setbanned.contains("ok")){
@@ -61,7 +64,7 @@ public class iBan extends JavaPlugin {
 						player2.setBanned(true);
 						player2.kickPlayer(ChatColor.RED + "kicked by iBan");
 						try {
-							String setbanned = get("http://iban.net63.net/GET/setbanned.php?user="+ conf.user +"&pass="+ conf.pass +"&player="+ player2.getName() +"&raison="+ args[1]);
+							String setbanned = get("http://iban.net63.net/GET/setbanned.php?user="+ conf.user +"&pass="+ conf.pass +"&player="+ player2.getName() +"&raison="+ URLEncoder.encode(Arrays.asList(args).toString(), "UTF-8"));
 							if(setbanned.contains("Error")){
 								player.sendMessage("["+ ChatColor.DARK_AQUA + "iBan" + ChatColor.RESET + "]" + ChatColor.RED + "Mauvaise combinaison login/password");
 							}else if(setbanned.contains("ok")){
@@ -96,5 +99,6 @@ public class iBan extends JavaPlugin {
 	in.close(); 
 	return source; 
 	}
+	
 
 }
